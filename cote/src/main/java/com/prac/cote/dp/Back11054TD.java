@@ -35,7 +35,7 @@ public class Back11054TD {
 
 		for(int i = 0; i < n; i++) {
 			lds(i, lis, coin);
-			rds(i, ris, coin, n);
+			rds(i, ris, coin);
 		}
 
 		for(int c = 0; c < n; c++) {
