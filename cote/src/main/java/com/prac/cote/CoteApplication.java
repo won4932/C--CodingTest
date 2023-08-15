@@ -1,15 +1,21 @@
 package com.prac.cote;
 
+import com.prac.cote.dp.Back1005;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import lombok.Getter;
 
-@SpringBootApplication
-public class CoteApplication {
+import java.io.IOException;
+import java.util.Scanner;
 
-	public static void main(String[] args) {
-		SpringApplication.run(CoteApplication.class, args);
-	}
-
-}
+//@SpringBootApplication
+//public class CoteApplication {
+//
+//	public static void main(String[] args) throws Exception {
+//		SpringApplication.run(CoteApplication.class, args);
+//
+//		Back1005 back1005 = new Back1005();
+//	}
+//
+//}
