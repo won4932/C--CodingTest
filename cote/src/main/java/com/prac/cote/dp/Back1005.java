@@ -10,6 +10,9 @@ import java.util.*;
 
 @SpringBootApplication
 public class Back1005 {
+
+    static ArrayList<Integer>[] seq;
+
     public static void main(String[] args) throws IOException {
         SpringApplication.run(Back1005.class, args);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -17,63 +20,62 @@ public class Back1005 {
         int t = Integer.parseInt(reader.readLine());
 
         for(int i = 0; i < t; i++) {
-            StringTokenizer st = new StringTokenizer(reader.readLine());
+            StringTokenizer st;
+            st = new StringTokenizer(reader.readLine());
             int n = Integer.parseInt(st.nextToken());
             int k = Integer.parseInt(st.nextToken());
 
-            int[][] seq = new int[n+1][];
+            st = new StringTokenizer(reader.readLine());
 
-            int[] building = Arrays.stream(reader.readLine().split(" "))
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
+            long[] building = new long[n+1];
+            seq = new ArrayList[n+1];
+            int[] ck = new int[n+1];
 
-            int index = 0;
-            String multi = "";
-
-            String[] subSeq = new String[k+1];
+            for(int a = 1; a < n + 1; a++) {
+                building[a] = Long.parseLong(st.nextToken());
+                seq[a] = new ArrayList<>();
+            }
 
             for(int a = 0; a < k; a++) {
                 StringTokenizer st2 = new StringTokenizer(reader.readLine());
 
-                String start = st2.nextToken();
+                int start = Integer.parseInt(st2.nextToken());
                 int end = Integer.parseInt(st2.nextToken());
 
-                subSeq[end] += start + " ";
+                seq[start].add(end);
+
+                ck[end]++;
             }
-
-            subSeq[index] = multi;
-
-            for(int c = 2; c < subSeq.length; c++) {
-                seq[c] = Arrays.stream(subSeq[c].split(" "))
-                        .mapToInt(Integer::parseInt)
-                        .toArray();
-            }
-
-//            for(int c = 0; c < subSeq.size(); c++) {
-//                seq.add(Arrays.stream(subSeq.get(c).split(" "))
-//                        .mapToInt(Integer::parseInt)
-//                        .toArray());
-//            }
 
             int w = Integer.parseInt(reader.readLine());
 
-            int[] time = new int[n+1];
-            time[1] = building[0];
+            long[] time = new long[n+1];
 
-            for(int b = 2; b < w + 1; b++) {
-                if(seq[b].length < 2) {
-                    time[b] = time[seq[b][0]] + building[b-1];
-                } else {
-                    int max = Integer.MIN_VALUE;
-                    for (int s : seq[b]) {
-                        max = Math.max(max, time[s]);
-                    }
+            bfs(time, building, ck);
 
-                    time[b] = max + building[b-1];
-                }
-                System.out.println(b + " : " + time[b]);
-            }
             System.out.println(time[w]);
+        }
+    }
+
+    public static void bfs(long[] time, long[] building, int[] ck) {
+        Queue<Integer> queue = new LinkedList<>();
+
+        for(int i = 1; i < ck.length; i++) {
+            if(ck[i] == 0) {
+                time[i] = building[i];
+                queue.add(i);
+            }
+        }
+
+        while(!queue.isEmpty()) {
+            int current = queue.poll();
+
+            for(int i = 0; i < seq[current].size(); i++) {
+                int next = seq[current].get(i);
+                time[next] = Math.max(time[current] + building[next], time[next]);
+                ck[next]--;
+                if(ck[next] == 0) queue.add(next);
+            }
         }
     }
 }
