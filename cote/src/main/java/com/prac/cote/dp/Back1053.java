@@ -10,8 +10,6 @@ import java.io.InputStreamReader;
 @SpringBootApplication
 public class Back1053 {
 
-    static String[][] dp;
-
     public static void main(String[] args) throws IOException {
 
         SpringApplication.run(Back1053.class, args);
@@ -19,29 +17,50 @@ public class Back1053 {
 
         String str = reader.readLine();
 
-        int l = str.length();
+        int result = dfs(str);
 
-        System.out.println(l);
-        System.out.println(str.substring(0, l/2) + " " + str.substring(l/2+1, l));
+        String strT;
 
-        dp = new String[str.length()][];
-
-//        dfs(0, str, l);
+        for(int d = 0; d < str.length(); d++) {
+            for(int e = d + 1; e < str.length() -1; e++) {
+                if(str.charAt(d) == str.charAt(e)) continue;
+                strT = swap(d, e, str);
+                result = Math.min(result, dfs(strT) + 1);
+            }
+        }
+        System.out.println(result);
 
     }
 
-    public static void dfs(int from, String str, int leng) {
-        if(leng % 2 == 0) {
-            if(str.substring(0, leng/2) == str.substring(leng/2, leng)) {
-                return;
-            }
-        }else {
-            if(str.substring(0, leng/2) == str.substring(leng/2+1, leng)) {
-                return;
+    public static int dfs(String str) {
+        int size = str.length();
+        int[][] dp = new int[size][size];
+
+        for(int a = 0; a < size; a++) {
+            dp[a][a] = 0;
+            if(a != size -1) {
+                dp[a][a+1] = str.charAt(a) == str.charAt(a+1) ? 0 : 1;
             }
         }
 
+        for(int b = 2; b < size; b++) {
+            for(int c = 0; c < size - b; c++) {
+                dp[c][c+b] = Math.min(dp[c+1][c+b] +1, dp[c][c+b-1] +1);
+                if(str.charAt(c) == str.charAt(c + b)) {
+                    dp[c][c+b] = Math.min(dp[c+1][c+b-1], dp[c][c+b]);
+                }else {
+                    dp[c][c+b] = Math.min(dp[c+1][c+b-1] + 1, dp[c][c+b]);
+                }
+            }
+        }
+    return dp[0][size-1];
+    }
 
-
+    public static String swap(int f, int b, String strT) {
+        StringBuilder sb = new StringBuilder(strT);
+        char temp = strT.charAt(f);
+        sb.setCharAt(f, strT.charAt(b));
+        sb.setCharAt(b, temp);
+        return sb.toString();
     }
 }
