@@ -33,10 +33,9 @@ public class Back2293 {
 	}
 
 	public static int dfs(int i, int k, int[] coin) {
-		if(i < 0) return 0;
-		if(k == 0) dp[i][k] = 1;
+		if(i < 0 || k < 0) return 0;
 
-		if(k <= 0) return 0;
+		if(k == 0) dp[i][k] = 1;
 
 			if(dp[i][k] == null) {
 				dp[i][k] = 0;
