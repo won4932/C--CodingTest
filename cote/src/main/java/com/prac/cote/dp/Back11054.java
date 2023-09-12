@@ -24,10 +24,7 @@ public class Back11054 {
 
 		int[] coin = new int[n];
 
-		int result = 1;
-
-		int min = 0;
-		int max = 0;
+		int result = 0;
 
 		st = new StringTokenizer(br.readLine());
 
@@ -35,22 +32,26 @@ public class Back11054 {
 			coin[i] = Integer.parseInt(st.nextToken());
 		}
 
+		int[] lis = new int[n];
 		for(int a = 0; a < n; a++) {
-			if(a < n/2) {
-				if (coin[a] < coin[n/2] && coin[a] > min) {
-					System.out.println("MIN : " + coin[a] + ",  " + min);
-					min = coin[a];
-					result++;
-				}
-			}else if(a > n/2){
-				if (coin[a] > coin[n/2] && coin[a] < max) {
-					System.out.println("MAX : " + coin[a] + ",  " + max);
-					max = coin[a];
-					result++;
-				}
+			lis[a] = 1;
+			for(int b = 0; b < a; b++) {
+				if(coin[a] > coin[b]) lis[a] = Math.max(lis[b] + 1, lis[a]);
 			}
 		}
 
-		System.out.println(result);
+		int[] ris = new int[n];
+		for(int a = n-1; a >= 0; a--) {
+			ris[a] = 1;
+			for(int b = n-1; b > a; b--) {
+				if(coin[a] > coin[b]) ris[a] = Math.max(ris[b] + 1, ris[a]);
+			}
+		}
+
+		for(int c = 0; c < n; c++) {
+			result = Math.max(result, lis[c] + ris[c]);
+		}
+
+		System.out.println(result-1);
 	}
 }
