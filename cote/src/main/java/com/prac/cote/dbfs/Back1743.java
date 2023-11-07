@@ -13,12 +13,9 @@ import java.util.StringTokenizer;
 @SpringBootApplication
 public class Back1743 {
 
+    static int[] dx = {-1, 0, 1, 0};
+    static int[] dy = {0, -1, 0, 1};
     static int answer = 0;
-
-    static int max = 0;
-
-    static int[] computer;
-
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(Back1743.class, args);
@@ -29,51 +26,46 @@ public class Back1743 {
 
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
 
-        List<Integer>[] list = new ArrayList[N+1];
-        computer = new int[N+1];
+        int[][] path = new int[N+1][M+1];
+
+        for(int i = 0; i < K; i++) {
+            st = new StringTokenizer(br.readLine());
+
+            int r = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+
+            path[r][c] = 1;
+        }
+
+        int max = 0;
 
         for(int i = 1; i <= N; i++) {
-            list[i] = new ArrayList<>();
-        }
+            for(int j = 1; j <=M; j++) {
+                max = Math.max(max, answer);
+                answer = 1;
+                if(path[i][j] == 1)
+                dfs(i, j, path, N, M);
 
-        for(int i = 0; i < M; i++) {
-            st= new StringTokenizer(br.readLine());
-
-            int com1 = Integer.parseInt(st.nextToken());
-            int com2 = Integer.parseInt(st.nextToken());
-
-            list[com1].add(com2);
-
-//            list.get(com2).add(com1);
-        }
-
-        for(int i = 1; i <= N; i++) {
-            boolean[] vistied = new boolean[N+1];
-            answer = 0;
-            dfs(i, list, vistied);
-        }
-
-        for (int i : computer) {
-            max = Math.max(max, i);
-        }
-
-        for(int i = 1; i <=N; i++) {
-            if(computer[i] == max) {
-                System.out.print(i + " ");
             }
         }
-
+        System.out.println(max);
     }
 
-    public static void dfs(int com,  List<Integer>[] list, boolean[] vistied) {
-        vistied[com] = true;
-        answer++;
+    public static void dfs(int r, int c, int[][] path, int N, int M) {
+        System.out.println(r + " : " + c);
+        path[r][c] = 0;
 
-        for (Integer i : list[com]) {
-            if(!vistied[i]) {
-                computer[i]++;
-                dfs(i, list, vistied);
+
+        for(int d = 0; d < 4; d++) {
+            int x = r + dx[d];
+            int y = c + dy[d];
+            if(x > -1 && y > -1 && x <= N && y <= M) {
+                if(path[x][y] == 1) {
+                    answer++;
+                    dfs(x, y, path, N, M);
+                }
             }
         }
     }
