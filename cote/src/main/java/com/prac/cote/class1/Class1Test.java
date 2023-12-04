@@ -16,12 +16,14 @@ public class Class1Test {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        st = new StringTokenizer(br.readLine());
+        String str = br.readLine();
 
-        double a = Integer.parseInt(st.nextToken());
-        double b = Integer.parseInt(st.nextToken());
+        if(str.equals(" ")) {
+            System.out.println(0);
+        }else {
+            System.out.println(str.trim().split(" ").length);
+        }
 
-        System.out.println(a/b);
 
     }
 }
