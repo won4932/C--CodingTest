@@ -12,12 +12,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Back1463 {
+public class Back1463_no {
 
     static ArrayList<Integer>[] seq;
 
     public static void main(String[] args) throws IOException {
-        SpringApplication.run(Back1463.class, args);
+        SpringApplication.run(Back1463_no.class, args);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         int t = Integer.parseInt(reader.readLine());
