@@ -10,14 +10,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Back2579 {
-	static int dp[];
-	static int score[];
-	public static void main(String[] args) {
+	static int[] dp;
+	static int[] score;
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		try {
 			int Case = Integer.parseInt(br.readLine());
-			dp = new int[Case +1];
-			score = new int[Case + 1];
+			dp = new int[Case +2];
+			score = new int[Case + 2];
 			for(int i =1; i<=Case; i++) {
 				score[i] = Integer.parseInt(br.readLine());
 			}
@@ -30,9 +29,5 @@ public class Back2579 {
 				dp[i] = Math.max(dp[i-2] + score[i], dp[i-3] + score[i] + score[i-1]);
 			}
 			System.out.println(dp[Case]);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }
