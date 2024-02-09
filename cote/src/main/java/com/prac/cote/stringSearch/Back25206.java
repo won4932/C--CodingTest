@@ -5,81 +5,45 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 @SpringBootApplication
 public class Back25206 {
-    static int N;
-    static int M;
+    static String[] grades = {"A+", "A0", "B+", "B0", "C+", "C0", "D+", "D0", "F"};
+    static Double[] subjectRating = {4.5, 4.0, 3.5, 3.0, 2.5, 2.0, 1.5, 1.0, 0.0};
 
     static Integer[][] dp;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        st = new StringTokenizer(br.readLine());
+        var majorRating = new HashMap<String, Double>();
 
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-
-        var S = new String[N];
-
-        int count = 0;
-
-        for(int i = 0; i < N; i++) {
-            S[i] = br.readLine();
+        for(int i = 0; i < grades.length; i++) {
+            majorRating.put(grades[i], subjectRating[i]);
         }
 
-        for(int i = 0; i < M; i++) {
-            String str = br.readLine();
+        double sumUnit = 0.0;
+        double sum = 0.0;
 
-            for(int j = 0; j < N; j++) {
-                if(S[j].length() != str.length()) continue;
+        for(int i = 0; i < 20; i++) {
+            st = new StringTokenizer(br.readLine());
 
-                if(S[j].charAt(0) == str.charAt(0)) {
-                    if(S[j].charAt(S[j].length()-1) == str.charAt(str.length()-1)) {
-                        boolean flag = true;
-                        for(int a = str.length()-1; a >= 0; a--) {
-                            if(S[j].charAt(a) != str.charAt(a)) {
-                                flag = false;
-                                break;
-                            }
-                        }
+            String subjectName = st.nextToken();
 
-                        if(flag) {
-                            count++;
-                            break;
-                        }
+            double unit = Double.parseDouble(st.nextToken());
 
-//                        if(S[j].equals(str)) {
-//                            count++;
-//                            break;
-//                        }
-                    }
-                }
-//                stringMatching(S[j], str);
-            }
+            String grade = st.nextToken();
+
+            if(grade.equals("P")) continue;
+
+            sumUnit+= unit;
+
+            sum += (unit * majorRating.get(grade));
         }
 
-        System.out.println(count);
+        System.out.println(String.format("%.6f", sum / sumUnit));
     }
 
-//    public static void stringMatching(String S, String check) {
-//
-//        for(int i = 0; i < S.length()-1; i++) {
-//            if(S.charAt(i) == check.charAt(0)) {
-//                if(S.charAt(S.length()-1) == check.charAt(check.length()-1)) {
-//
-//                }
-//            }
-//        }
-//
-//        if(S.contains(check.charAt(0) + "")) {
-//           if(S.contains(check.charAt(check.length()-1) + "")) {
-//
-//           }
-//        }
-//
-//
-//    }
 }
