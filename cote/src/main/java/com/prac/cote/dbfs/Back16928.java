@@ -3,81 +3,87 @@ package com.prac.cote.dbfs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Back16928 {
-    static int N, M;
-    static char[][] treasureMap;
+    static int ladder, snake;
+    static Map<Integer, Integer> ladderInfo;
+    static Map<Integer, Integer> snakeInfo;
 
-    static boolean[][] visited;
+    static boolean[] visited;
 
-    static int[] dx = {-1, 0 , 1, 0};
-    static int[] dy = {0, -1, 0, 1};
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
         st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        ladder = Integer.parseInt(st.nextToken());
+        snake = Integer.parseInt(st.nextToken());
 
-        int result = Integer.MIN_VALUE;
+        visited = new boolean[101];
 
-        treasureMap = new char[N][M];
+        ladderInfo = new HashMap<>();
+        snakeInfo = new HashMap<>();
 
-        for(int i = 0 ; i < N ; i++) {
-            String row = br.readLine();
-            treasureMap[i] = row.toCharArray();
+        for(int i = 0 ; i < ladder ; i++) {
+            st = new StringTokenizer(br.readLine());
+            ladderInfo.put(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
         }
 
-        for(int i = 0 ; i < N; i++) {
-            for(int j = 0 ; j < M; j++) {
-                if(treasureMap[i][j] == 'L') {
-                    visited = new boolean[N][M];
-                    int max = bfs(i, j);
-                    result = Math.max(result, max);
-                }
-            }
+        for(int i = 0 ; i < snake ; i++) {
+            st = new StringTokenizer(br.readLine());
+            snakeInfo.put(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
         }
 
-        System.out.println(result);
+        System.out.println(bfs(1));
+
+
     }
 
-    public static int bfs(int x, int y) {
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(new Node(x, y, 0));
-        visited[x][y] = true;
+    public static int bfs(int idx) {
+        Queue<Dice> queue = new LinkedList<>();
+        queue.add(new Dice(idx, 0));
+        visited[idx] = true;
 
-        int count = 0;
+        int min = 100;
 
         while(!queue.isEmpty()) {
-            Node node = queue.poll();
-            for(int i = 0; i < 4; i++) {
-                int nx = node.x + dx[i];
-                int ny = node.y + dy[i];
+            Dice dice = queue.poll();
 
-                if(nx < N && nx >= 0 && ny < M && ny >= 0 && !visited[nx][ny]  && treasureMap[nx][ny] == 'L') {
-                    queue.add(new Node(nx, ny, node.count + 1));
-                    count = Math.max(count, node.count + 1);
-                    visited[nx][ny] = true;
+            for(int i = 1; i <= 6; i++) {
+                int nx = dice.now + i;
+
+                if(nx > 100) break;
+                else if(nx < 100 && !visited[nx]) {
+                    visited[nx] = true;
+                    if(ladderInfo.containsKey(nx)) {
+                        nx = ladderInfo.get(nx);
+                    }else if(snakeInfo.containsKey(nx)) {
+                        nx = snakeInfo.get(nx);
+                    }
+                    visited[nx] = true;
+                    queue.add(new Dice(nx, dice.count+1));
                 }
+
+                if(nx == 100)  min = Math.min(min, dice.count+1);
+
             }
         }
 
-        return count;
+        return min;
+
     }
 
-    public static class Node {
-        int x;
-        int y;
+    public static class Dice {
+        int now;
         int count;
-
-        public Node(int x, int y, int count) {
-            this.x = x;
-            this.y = y;
+        public Dice(int now, int count) {
+            this.now = now;
             this.count = count;
         }
     }
