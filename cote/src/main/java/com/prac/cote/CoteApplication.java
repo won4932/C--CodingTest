@@ -1,12 +1,5 @@
 package com.prac.cote;
 
-import com.prac.cote.dp.Back1005;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import lombok.Getter;
-
-import java.io.IOException;
 import java.util.Scanner;
 
 class Main {
