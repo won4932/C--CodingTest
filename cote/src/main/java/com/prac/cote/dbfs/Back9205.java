@@ -22,13 +22,13 @@ public class Back9205 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        sanggeun = new int[2];
-        stores = new LinkedList<>();
-        pantafort = new int[2];
-
         T = Integer.parseInt(br.readLine());
 
         for(int i = 0; i < T; i++) {
+            sanggeun = new int[2];
+            stores = new LinkedList<>();
+            pantafort = new int[2];
+
             storeCount = Integer.parseInt(br.readLine());
 
             st= new StringTokenizer(br.readLine());
@@ -52,63 +52,34 @@ public class Back9205 {
     }
 
     public static boolean bfs(int x, int y) {
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(new Node(x, y, 20));
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{x, y});
+        var visited = new boolean[storeCount];
 
         while(!queue.isEmpty()) {
-            Node node = queue.poll();
+            int[] nxy = queue.poll();
 
-            int nx = node.x;
-            int ny = node.y;
-            int nBear = node.bear;
+            int nx = nxy[0];
+            int ny = nxy[1];
 
-            System.out.println(nx + " : " + ny + ", " + nBear);
-
-            if(node.bear < 0) {
-                break;
-            }
-
-            if(nx == pantafort[0] && ny == pantafort[1]) {
+            if(Math.abs(nx - pantafort[0]) + Math.abs(ny - pantafort[1]) <= 1000) {
                 return true;
             }
 
-            for (int[] store : stores) {
-                if(nx == store[0] && ny == store[1]) {
-                    nBear = 20;
+            for(int i = 0; i < storeCount; i++) {
+                if(!visited[i]) {
+                    int sx = stores.get(i)[0];
+                    int sy = stores.get(i)[1];
+                    if(Math.abs(nx - sx) + Math.abs(ny - sy) <= 1000) {
+                        visited[i] = true;
+                        queue.add(new int[]{sx, sy});
+                    }
                 }
-            }
 
-            if(nx < pantafort[0]) {
-                nx = nx+50;
-                nBear = nBear-1;
-            }else if(nx > pantafort[0]) {
-                nx = nx-50;
-                nBear = nBear-1;
             }
-
-            if(ny < pantafort[1]) {
-                ny = ny+50;
-                nBear = nBear-1;
-            }else if(ny > pantafort[1]) {
-                ny = ny-50;
-                nBear = nBear-1;
-            }
-            queue.add(new Node(nx, ny, nBear));
-
         }
 
         return false;
     }
 
-    public static class Node {
-        int x;
-        int y;
-
-        int bear;
-        public Node(int x, int y, int bear) {
-            this.x = x;
-            this.y = y;
-            this.bear = bear;
-        }
-    }
 }
