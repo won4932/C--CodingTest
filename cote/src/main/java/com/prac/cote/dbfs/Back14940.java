@@ -3,80 +3,100 @@ package com.prac.cote.dbfs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Back14940 {
-    static int T, storeCount;
+    static int N, M;
 
-    static int[] sanggeun, pantafort;
+    static int[][] map, dp;
 
-    static List<int[]> stores;
+    static int[] impo = new int[2];
+
+    static int[] dx = {0, -1, 0, 1};
+    static int[] dy = {-1, 0, 1, 0};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        T = Integer.parseInt(br.readLine());
+        st = new StringTokenizer(br.readLine());
 
-        for(int i = 0; i < T; i++) {
-            sanggeun = new int[2];
-            stores = new LinkedList<>();
-            pantafort = new int[2];
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-            storeCount = Integer.parseInt(br.readLine());
+        map = new int[N][M];
+        dp = new int[N][M];
 
-            st= new StringTokenizer(br.readLine());
+        for (int[] ints : dp) {
+            Arrays.fill(ints, -1);
+        }
 
-            sanggeun[0] = Integer.parseInt(st.nextToken());
-            sanggeun[1] = Integer.parseInt(st.nextToken());
+        // Arrays.fill(dp[0], -1);
 
-            for(int j = 0; j < storeCount; j++) {
-                st = new StringTokenizer(br.readLine());
-                stores.add(new int[]{Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < M; j++) {
+                int land = Integer.parseInt(st.nextToken());
+                if(land == 2) {
+                    impo[0] = i;
+                    impo[1] = j;
+                }
+
+                if(land == 0) dp[i][j] = 0;
+
+                map[i][j] = land;
+            }
+        }
+
+        bfs(impo[0], impo[1]);
+
+        for (int[] ints : dp) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
             }
 
-            st = new StringTokenizer(br.readLine());
+            System.out.println();
+        }
 
-            pantafort[0] = Integer.parseInt(st.nextToken());
-            pantafort[1] = Integer.parseInt(st.nextToken());
+    }
 
-            if(bfs(sanggeun[0], sanggeun[1])) System.out.println("happy");
-            else System.out.println("sad");
+    public static void bfs(int x, int y) {
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(new Node(x, y, 0));
+
+        dp[x][y] = 0;
+
+        while(!queue.isEmpty()) {
+            Node node = queue.poll();
+
+            for(int i = 0; i < 4; i++) {
+                int nx = node.x + dx[i];
+                int ny = node.y + dy[i];
+
+                if(nx < N && nx >= 0 && ny < M && ny >= 0 && map[nx][ny] == 1) {
+                    map[nx][ny] = 0;
+                    dp[nx][ny] = node.count+1;
+                    queue.add(new Node(nx, ny, node.count+1));
+                }
+            }
+
         }
     }
 
-    public static boolean bfs(int x, int y) {
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{x, y});
-        var visited = new boolean[storeCount];
+    static class Node {
+        int x;
+        int y;
+        int count;
 
-        while(!queue.isEmpty()) {
-            int[] nxy = queue.poll();
-
-            int nx = nxy[0];
-            int ny = nxy[1];
-
-            if(Math.abs(nx - pantafort[0]) + Math.abs(ny - pantafort[1]) <= 1000) {
-                return true;
-            }
-
-            for(int i = 0; i < storeCount; i++) {
-                if(!visited[i]) {
-                    int sx = stores.get(i)[0];
-                    int sy = stores.get(i)[1];
-                    if(Math.abs(nx - sx) + Math.abs(ny - sy) <= 1000) {
-                        visited[i] = true;
-                        queue.add(new int[]{sx, sy});
-                    }
-                }
-
-            }
+        Node(int x, int y, int count) {
+            this.x = x;
+            this.y = y;
+            this.count = count;
         }
-
-        return false;
     }
 
 }
