@@ -11,11 +11,14 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Back18405 {
-    static int N, M, R;
+    static int N, K, S, X, Y;
 
-    static List<List<Integer>> graph;
+    static int[][] examiner;
 
-    static int[] visited;
+    static boolean[][] visited;
+
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
 
     static StringBuffer sb = new StringBuffer();
 
@@ -27,56 +30,65 @@ public class Back18405 {
         st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        R = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
 
-        visited = new int[N+1];
-        graph = new ArrayList<>();
+        examiner = new int[N][N];
 
-        for(int i = 0; i < N+1; i++) {
-            graph.add(new ArrayList<>());
-        }
-
-        for(int i = 0; i < M; i++) {
+        for(int i=0; i<N; i++) {
             st = new StringTokenizer(br.readLine());
-
-            int x = Integer.parseInt(st.nextToken());
-            int y = Integer.parseInt(st.nextToken());
-
-            graph.get(x).add(y);
-            graph.get(y).add(x);
+            for(int j=0; j<N; j++) {
+                examiner[i][j] = Integer.parseInt(st.nextToken());
+            }
         }
 
-        for(int i = 1; i <= N; i++) {
-            Collections.sort(graph.get(i));
-        }
+        st = new StringTokenizer(br.readLine());
 
-        bfs(R);
+        S = Integer.parseInt(st.nextToken());
+        X = Integer.parseInt(st.nextToken());
+        Y = Integer.parseInt(st.nextToken());
 
-        for(int i = 1; i <= N; i++) {
-            sb.append(visited[i]).append("\n");
-        }
+        for(int a = 0; a < S; a++) {
+            for(int b = 1; b <= K; b++) {
+                visited = new boolean[N][N];
+                for(int i = 0; i < N; i++) {
+                    for(int j = 0; j < N; j++) {
+                        if(!visited[i][j] && examiner[i][j] == b) {
+                            if(bfs(i, j, b)) {
+                                return;
+                            }
+                        }
 
-        System.out.println(sb.toString());
-    }
+                    }
+                }
 
-    public static void bfs(int idx) {
-        Queue<Integer> queue = new LinkedList<>();
-        queue.add(idx);
-        int count = 1;
-        visited[idx] = 1;
-
-        while (!queue.isEmpty()) {
-            int now = queue.poll();
-
-            for (Integer i : graph.get(now)) {
-                if(visited[i] == 0) {
-                    count++;
-                    visited[i] = count;
-                    queue.add(i);
+                if(examiner[X-1][Y-1] != 0) {
+                    System.out.println(examiner[X-1][Y-1]);
+                    return;
                 }
             }
         }
+
+
+
+        System.out.println(examiner[X-1][Y-1]);
+
+
+    }
+
+    public static boolean bfs(int x, int y, int separator) {
+        visited[x][y] = true;
+
+        for(int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            if(nx < N && nx >= 0 && ny < N && ny >= 0 && !visited[nx][ny] && examiner[nx][ny] == 0) {
+                visited[nx][ny] = true;
+                examiner[nx][ny] = separator;
+            }
+        }
+
+        return false;
     }
 
 }
