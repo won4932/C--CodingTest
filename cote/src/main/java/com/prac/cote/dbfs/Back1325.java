@@ -10,12 +10,13 @@ import java.util.*;
 
 @SpringBootApplication
 public class Back1325 {
-
-    static int answer = 0;
-
-    static int max = 0;
+    static int max;
 
     static int[] computer;
+
+    static boolean[] vistied;
+
+    static List<Integer>[] list;
 
 
     public static void main(String[] args) throws IOException {
@@ -28,8 +29,9 @@ public class Back1325 {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
-        List<Integer>[] list = new ArrayList[N+1];
+        list = new ArrayList[N+1];
         computer = new int[N+1];
+        vistied = new boolean[N+1];
 
         for(int i = 1; i <= N; i++) {
             list[i] = new ArrayList<>();
@@ -42,14 +44,11 @@ public class Back1325 {
             int com2 = Integer.parseInt(st.nextToken());
 
             list[com1].add(com2);
-
-//            list.get(com2).add(com1);
         }
 
         for(int i = 1; i <= N; i++) {
-            boolean[] vistied = new boolean[N+1];
-            answer = 0;
-            dfs(i, list, vistied);
+            vistied = new boolean[N+1];
+            bfs(i);
         }
 
         for (int i : computer) {
@@ -64,15 +63,32 @@ public class Back1325 {
 
     }
 
-    public static void dfs(int com,  List<Integer>[] list, boolean[] vistied) {
+    public static void dfs(int com,  List<Integer>[] list) {
         vistied[com] = true;
-        answer++;
 
         for (Integer i : list[com]) {
             if(!vistied[i]) {
                 computer[i]++;
-                dfs(i, list, vistied);
+                dfs(i, list);
             }
+        }
+    }
+
+    public static void bfs(int com) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(com);
+
+        vistied[com] = true;
+
+        while (!queue.isEmpty()) {
+            int now = queue.poll();
+            for(int i : list[now]) {
+                if(vistied[i]) continue;
+                computer[i]++;
+                vistied[i]= true;
+                queue.add(i);
+            }
+
         }
     }
 }
