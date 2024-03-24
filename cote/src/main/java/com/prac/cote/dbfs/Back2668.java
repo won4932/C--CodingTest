@@ -5,68 +5,53 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 @SpringBootApplication
 public class Back2668 {
-    static int[] vistied;
+    static int N;
 
-    static List<Integer>[] list;
+    static int[] list;
 
-    static int cnt;
+    static boolean[] visited;
+
+    static ArrayList<Integer> cnt;
 
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(br.readLine());
 
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int start = Integer.parseInt(st.nextToken());
-
-        list = new ArrayList[N+1];
-        vistied = new int[N+1];
+        cnt = new ArrayList<>();
+        list = new int[N+1];
+        visited = new boolean[N+1];
 
         for(int i = 1; i <= N; i++) {
-            list[i] = new ArrayList<>();
+            list[i] = Integer.parseInt(br.readLine());
         }
 
-        for(int i = 0; i < M; i++) {
-            st= new StringTokenizer(br.readLine());
-
-            int com1 = Integer.parseInt(st.nextToken());
-            int com2 = Integer.parseInt(st.nextToken());
-
-            list[com1].add(com2);
-            list[com2].add(com1);
+        for(int i = 1; i <=N; i++) {
+            visited[i] = true;
+            dfs(i, i);
+            visited[i] = false;
         }
 
-        for (List<Integer> integers : list) {
-            if(integers != null) Collections.sort(integers);
-        }
-
-        cnt = 1;
-
-        dfs(start);
-
-        for (int i = 1; i <= N; i++) {
-            System.out.println(vistied[i]);
+        Collections.sort(cnt);
+        System.out.println(cnt.size());
+        for(int i = 0; i < cnt.size(); i++) {
+            System.out.println(cnt.get(i));
         }
     }
 
-    public static void dfs(int com) {
-        vistied[com] = cnt;
-
-        for (Integer i : list[com]) {
-            if(vistied[i] == 0) {
-                cnt++;
-                dfs(i);
-            }
+    public static void dfs(int start, int target) {
+        int nt = list[start];
+        if(!visited[nt]) {
+            visited[nt] = true;
+            dfs(nt, target);
+            visited[nt] = false;
         }
+        if(nt == target) cnt.add(target);
     }
 }
