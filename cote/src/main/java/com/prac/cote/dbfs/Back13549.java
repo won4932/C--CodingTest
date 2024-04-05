@@ -5,49 +5,50 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.*;
 
 @SpringBootApplication
 public class Back13549 {
-    static ArrayList<ArrayList<Integer>> friend;
-    static boolean[] visit;
+    static int min = Integer.MAX_VALUE;
+
+    static int subin, sister;
+    static boolean[] visited;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        friend = new ArrayList<>();
-        for(int i=0; i<N; i++) {
-            friend.add(new ArrayList<Integer>());
-        }
-        for(int i=0; i<M; i++) {
-            st = new StringTokenizer(br.readLine(), " ");
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        subin = Integer.parseInt(st.nextToken());
+        sister = Integer.parseInt(st.nextToken());
 
-            friend.get(a).add(b);
-            friend.get(b).add(a);
+        visited = new boolean[100001];
 
-        }
-        for(int i=0; i<N; i++) {
-            visit = new boolean[N];
-            if(dfs(i, 1)) {
-                System.out.println("1");
-                return;
-            }
-        }
-        System.out.println("0");
+        bfs();
+
+        System.out.println(min);
     }
-    private static boolean dfs(int now, int depth) {
-        if(depth==5) return true;
+    private static void bfs() {
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(new Node(subin, 0));
 
-        visit[now] = true;
-        for(int i : friend.get(now)) {
-            if(visit[i]) continue;
-            if(dfs(i, depth+1)) return true;
+        while (!queue.isEmpty()) {
+            Node n = queue.poll();
+            visited[n.x] = true;
+
+            if(n.x == sister) min = Math.min(min, n.time);
+
+            if(n.x * 2 <= 10000 && !visited[n.x * 2]) queue.add(new Node(n.x * 2, n.time));
+            if(n.x + 1 <= 10000 && !visited[n.x + 1]) queue.add(new Node(n.x + 1, n.time + 1));
+            if(n.x - 1 >= 0 && !visited[n.x - 1]) queue.add(new Node(n.x - 1, n.time + 1));
+
         }
-        visit[now] = false;
-        return false;
+    }
+
+    public static class Node {
+        int x;
+        int time;
+
+        public Node(int x, int time) {
+            this.x = x;
+            this.time = time;
+        }
     }
 }
