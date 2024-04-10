@@ -6,60 +6,67 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
 
 @SpringBootApplication
 public class Back5014 {
+
+    static int FTotal, SNow, Goal, Up, Down;
+
+    static int[] visited;
+
     public static void main(String[] args) throws IOException {
-        SpringApplication.run(Back5014.class, args);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
+        
+        List<Integer> list = new ArrayList<>();
 
-        while(true) {
-            String inputLine = br.readLine();
-            if (inputLine.equals("00") || inputLine.equals("0 0")) break;
+        Set<Integer> s = new HashSet<>();
 
-            st = new StringTokenizer(inputLine, " ");
 
-            int w = Integer.parseInt(st.nextToken());
-            int h = Integer.parseInt(st.nextToken());
 
-            int[][] map;
-            map = new int[h][w];
+        List.of(1, 2);
+        st = new StringTokenizer(br.readLine());
 
-            for(int i = 0; i < h; i++) {
-                String island = br.readLine();
-                map[i] = Arrays.stream(island.split(" ")).mapToInt(Integer::parseInt).toArray();
-            }
+        FTotal = Integer.parseInt(st.nextToken());
+        SNow = Integer.parseInt(st.nextToken());
+        Goal = Integer.parseInt(st.nextToken());
+        Up = Integer.parseInt(st.nextToken());
+        Down = Integer.parseInt(st.nextToken());
 
-            int answer = 0;
+        visited = new int[FTotal + 1];
 
-            for(int i = 0; i < h; i++) {
-                for(int j = 0; j < w; j++) {
-                    if(map[i][j] == 1) {
-                        answer++;
-                        dfs(i, j, map, w, h);
-                    }
-                }
-            }
+        int result = bfs(SNow);
 
-            System.out.println(answer);
-        }
-
+        if(result == -1) System.out.println("use the stairs");
+        else System.out.println(result);
     }
 
-    public static void dfs(int x, int y, int[][] map, int w, int h) {
-        map[x][y] = 0;
+    public static int bfs(int now) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(now);
 
-        for(int i = -1; i < 2; i++) {
-            for(int j = -1; j < 2; j++) {
-                int a = x + j;
-                int b = y + i;
-                if(a > -1 && b > -1 && a < h && b < w) {
-                    if(map[a][b] == 1) dfs(a, b, map, w, h);
-                }
+        visited[now] = 1;
+
+        while (!queue.isEmpty()) {
+            int next = queue.poll();
+
+            int nUp = next + Up;
+            int nDown = next - Down;
+
+            if(next == Goal) return visited[next] - 1;
+
+            if(nUp <= FTotal && visited[nUp] == 0) {
+                visited[nUp] = visited[next] + 1;
+                queue.add(nUp);
+            }
+
+            if(nDown > 0 && visited[nDown] == 0) {
+                visited[nDown] = visited[next] + 1;
+                queue.add(nDown);
             }
         }
+
+        return -1;
     }
 }
