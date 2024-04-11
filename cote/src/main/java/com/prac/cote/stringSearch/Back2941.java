@@ -10,38 +10,57 @@ import java.util.StringTokenizer;
 
 @SpringBootApplication
 public class Back2941 {
-    static int N;
+    static String N;
+
+    static final String[] criatia = {"c=", "c-", "dz=", "d-", "lj", "nj", "s=", "z="};
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        N = Integer.parseInt(br.readLine());
+        N = br.readLine();
 
         int count = 0;
 
-        for(int i = 0; i < N; i++) {
-            String word = br.readLine();
+        char ck = 0;
 
-            var set = new HashSet<Character>();
+//        int i = N.length()-1;
+//
+//        int j = i - 1;
+//
+//
+//        while(i >= 0) {
+//            if(j >= 0) {
+//
+//            }else {
+//                j++;
+//            }
+//        }
 
-            char sequenceCheck = 0;
+        for(int i = N.length()-1; i >= 0; i--) {
+            char now = N.charAt(i);
 
-            boolean check = true;
+            if(now == '=' || now == '-' || now == 'j') {
+                int j = i - 1;
 
-            for(int j = word.length()-1; j >= 0; j--) {
-                char now = word.charAt(j);
+                if(j >= 0) {
+                    String critriaCk = N.charAt(j) + "" + now;
 
-                if(set.contains(now) && sequenceCheck != now) {
-                    check = false;
-                    continue;
-                }else {
-                    set.add(now);
+
+                    for (String s : criatia) {
+                        if(critriaCk.equals(s)) {
+                            if(critriaCk.equals("z=") && j-1 >= 0) {
+                                if((N.charAt(j-1) + critriaCk).equals("dz=")) {
+                                    i--;
+                                }
+                            }
+                            i--;
+                            break;
+                        }
+                    }
                 }
-
-                sequenceCheck = now;
             }
 
-            if(check) count++;
+            count++;
         }
 
         System.out.println(count);
