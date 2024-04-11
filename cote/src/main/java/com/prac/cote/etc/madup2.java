@@ -1,9 +1,8 @@
-package com.prac.cote.temp;
+package com.prac.cote.etc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
