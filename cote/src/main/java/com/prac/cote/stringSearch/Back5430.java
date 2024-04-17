@@ -5,52 +5,99 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @SpringBootApplication
 public class Back5430 {
-    static String N;
+    static int T;
 
-    static final String[] criatia = {"c=", "c-", "dz=", "d-", "lj", "nj", "s=", "z="};
+    static final Pattern pattern = Pattern.compile("\\d+");
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        while (true) {
-            String str = br.readLine();
+        T = Integer.parseInt(br.readLine());
 
-            if (!str.isEmpty() && str.charAt(0) == '.') break;
+        for(int i = 0; i < T; i++) {
+            String command = br.readLine();
+            int arrLength = Integer.parseInt(br.readLine());
+//            String arr = br.readLine();
+            st = new StringTokenizer(br.readLine(), "[],");
+            ArrayDeque<Integer> deque = new ArrayDeque<>();
 
-            var sk = new Stack<Character>();
+//            Matcher matcher = pattern.matcher(arr);
+//
+//            while(matcher.find()) {
+//                deque.add(Integer.parseInt(matcher.group()));
+//            }
 
-            boolean flag = true;
+            for(int b = 0 ; b < arrLength; b++) {
+                deque.add(Integer.parseInt(st.nextToken()));
+            }
 
-            for (int i = str.length() - 1; i >= 0; i--) {
-                if (str.charAt(i) == ')' || str.charAt(i) == ']') sk.push(str.charAt(i));
-                else if (str.charAt(i) == '(') {
-                    if (!sk.isEmpty()) {
-                        if (sk.peek() == ')') sk.pop();
-                        else flag = false;
-                    } else {
-                        flag = false;
-                        break;
-                    }
+            AC(command, deque);
 
-                } else if (str.charAt(i) == '[') {
-                    if (!sk.isEmpty()) {
-                        if (sk.peek() == ']') sk.pop();
-                        else flag = false;
-                    } else {
-                        flag = false;
-                        break;
+//            if(flag) {
+//                System.out.print("[");
+//                while(!deque.isEmpty()) {
+//                    if(reverse) {
+//                        System.out.print(deque.pollLast());
+//                    }else {
+//                        System.out.print(deque.poll());
+//                    }
+//
+//                    if(!deque.isEmpty()) System.out.print(",");
+//                }
+//                System.out.print("]");
+//            }else {
+//                System.out.print("error");
+//            }
+//
+//            System.out.println();
 
-                    }
+        }
+        System.out.println(sb);
+    }
+
+    public static void AC(String command, ArrayDeque<Integer> deque) {
+        boolean reverse = false;
+
+        for(int j = 0; j < command.length(); j++) {
+            if(command.charAt(j) == 'R') {
+                reverse = !reverse;
+            }else {
+                if(deque.isEmpty()) {
+//                    flag = false;
+                    sb.append("error\n");
+                    return;
+                }
+                if(reverse) {
+                    deque.pollLast();
+                }else {
+                    deque.pollFirst();
                 }
             }
-            if (sk.isEmpty() && flag) System.out.println("yes");
-            else System.out.println("no");
         }
+
+        printString(deque, reverse);
+    }
+
+    public static void printString(ArrayDeque<Integer> deque, boolean reverse) {
+        sb.append('[');
+
+        while(!deque.isEmpty()) {
+            if(reverse) {
+                sb.append(deque.pollLast());
+            }else {
+                sb.append(deque.poll());
+            }
+
+            if(!deque.isEmpty()) sb.append(',');
+        }
+
+        sb.append(']').append('\n');
     }
 }
