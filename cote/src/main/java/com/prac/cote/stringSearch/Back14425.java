@@ -9,35 +9,77 @@ import java.util.StringTokenizer;
 
 @SpringBootApplication
 public class Back14425 {
-    static String N;
-    static String M;
+    static int N;
+    static int M;
 
     static Integer[][] dp;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        N = br.readLine();
-        M = br.readLine();
+        st = new StringTokenizer(br.readLine());
 
-        dp = new Integer[N.length()][M.length()];
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        System.out.println(dfs(N.length()-1, M.length()-1));
+        var S = new String[N];
 
-    }
+        int count = 0;
 
-    public static int dfs(int nIdx, int mIdx) {
-        if(nIdx < 0 || mIdx < 0) return 0;
+        for(int i = 0; i < N; i++) {
+            S[i] = br.readLine();
+        }
 
-        if(dp[nIdx][mIdx] == null) {
-            dp[nIdx][mIdx] = 0;
-            if(N.charAt(nIdx) == M.charAt(mIdx)) {
-                dp[nIdx][mIdx] = dfs(nIdx-1, mIdx-1) + 1;
-            }else {
-                dp[nIdx][mIdx] = Math.max(dfs(nIdx-1, mIdx), dfs(nIdx, mIdx-1));
+        for(int i = 0; i < M; i++) {
+            String str = br.readLine();
+
+            for(int j = 0; j < N; j++) {
+                if(S[j].length() != str.length()) continue;
+
+                if(S[j].charAt(0) == str.charAt(0)) {
+                    if(S[j].charAt(S[j].length()-1) == str.charAt(str.length()-1)) {
+                        boolean flag = true;
+                        for(int a = str.length()-1; a >= 0; a--) {
+                            if(S[j].charAt(a) != str.charAt(a)) {
+                                flag = false;
+                                break;
+                            }
+                        }
+
+                        if(flag) {
+                            count++;
+                            break;
+                        }
+
+//                        if(S[j].equals(str)) {
+//                            count++;
+//                            break;
+//                        }
+                    }
+                }
+//                stringMatching(S[j], str);
             }
         }
 
-        return dp[nIdx][mIdx];
+        System.out.println(count);
     }
+
+//    public static void stringMatching(String S, String check) {
+//
+//        for(int i = 0; i < S.length()-1; i++) {
+//            if(S.charAt(i) == check.charAt(0)) {
+//                if(S.charAt(S.length()-1) == check.charAt(check.length()-1)) {
+//
+//                }
+//            }
+//        }
+//
+//        if(S.contains(check.charAt(0) + "")) {
+//           if(S.contains(check.charAt(check.length()-1) + "")) {
+//
+//           }
+//        }
+//
+//
+//    }
 }
