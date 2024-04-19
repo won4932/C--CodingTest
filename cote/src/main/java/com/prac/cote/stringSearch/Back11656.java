@@ -3,6 +3,7 @@ package com.prac.cote.stringSearch;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Back11656 {
@@ -10,33 +11,19 @@ public class Back11656 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        int[] aa = new int[2];
+        String S = br.readLine();
 
-         String dasom = br.readLine();
+        var suffixArray = new String[S.length()+1];
 
-         int[] reserved = dasom
-             .chars()
-             .map(c -> c - '0')
-             .toArray();
-        int check = -1;
-
-        for(int i = 0; i < reserved.length; i++) {
-            if(check != reserved[i]) {
-                check = reserved[i];
-                aa[reserved[i]]++;
-            }
+        for(int i = 0; i <= S.length(); i++) {
+            suffixArray[i] = S.substring(i, S.length());
         }
 
-        System.out.println(Math.min(aa[0], aa[1]));
+        Arrays.sort(suffixArray);
 
-        //     if(check != reserved[i]) {
-        //         count++;
-        //         int swap = check;
-        //         check = reserved[i];
-        //         reserved[i] = swap;
-        //     }
-        //
-        // System.out.println(count);
+        for (String s : suffixArray) {
+            System.out.println(s);
+        }
 
     }
 
