@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
 public class Back1764 {
@@ -19,15 +20,11 @@ public class Back1764 {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        var duddo = new ArrayList<String>();
-        var duddoMap = new HashMap<String, Integer>();
+        var duddo = new HashSet<String>();
         var dudbo = new ArrayList<String>();
 
         for(int i = 0; i < N; i++) {
-            String duddoo = br.readLine();
-            int duddooHash = duddoo.hashCode();
-            duddoMap.put(duddoo, i);
-            // duddo.add(br.readLine());
+            duddo.add(br.readLine());
         }
 
         for(int i = 0; i < M; i++) {
