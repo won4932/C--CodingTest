@@ -5,45 +5,40 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class Back10610 {
-    static String[] grades = {"A+", "A0", "B+", "B0", "C+", "C0", "D+", "D0", "F"};
-    static Double[] subjectRating = {4.5, 4.0, 3.5, 3.0, 2.5, 2.0, 1.5, 1.0, 0.0};
-
     static Integer[][] dp;
+
+    static ArrayList<Integer> mirko;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        var majorRating = new HashMap<String, Double>();
+        StringBuilder sb = new StringBuilder();
 
-        for(int i = 0; i < grades.length; i++) {
-            majorRating.put(grades[i], subjectRating[i]);
+        mirko  = br.readLine()
+                .chars()
+                .mapToObj(c -> Character.getNumericValue((char) c))
+                .sorted(Collections.reverseOrder())
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        int sum = mirko.stream().mapToInt(l -> l).sum();
+
+        if(!mirko.contains(0) || sum % 3 != 0) {
+            System.out.println(-1);
+            return;
         }
 
-        double sumUnit = 0.0;
-        double sum = 0.0;
-
-        for(int i = 0; i < 20; i++) {
-            st = new StringTokenizer(br.readLine());
-
-            String subjectName = st.nextToken();
-
-            double unit = Double.parseDouble(st.nextToken());
-
-            String grade = st.nextToken();
-
-            if(grade.equals("P")) continue;
-
-            sumUnit+= unit;
-
-            sum += (unit * majorRating.get(grade));
+        for (Integer i : mirko) {
+            sb.append(i);
         }
 
-        System.out.println(String.format("%.6f", sum / sumUnit));
+        System.out.println(sb);
+
+
     }
 
 }
