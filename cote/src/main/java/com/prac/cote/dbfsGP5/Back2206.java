@@ -43,37 +43,48 @@ public class Back2206 {
             }
         }
 
+        min = min == Integer.MAX_VALUE ? -1 : min;
+
         System.out.println(min);
     }
 
     private static void bfs() {
-        Queue<int []> queue = new LinkedList<>();
-        queue.add(new int[]{0, 0});
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(new Node(0, 0, 1));
         boolean[][] visited = new boolean[N][M];
         visited[0][0] = true;
 
-        int count = 0;
-
 
         while(!queue.isEmpty()) {
-            int[] xy = queue.poll();
+            Node node = queue.poll();
 
-            if(xy[0] == N-1 && xy[1] == M-1) {
-                min = Math.min(min, count);
+            if(node.x == N-1 && node.y == M-1) {
+                min = Math.min(min, node.count);
                 return;
             }
 
             for(int i = 0; i < 4; i++) {
-                int nx = xy[1] + dx[i];
-                int ny = xy[0] + dy[i];
+                int nx = node.y + dx[i];
+                int ny = node.x + dy[i];
                 if(nx > -1 && nx < M && ny > -1 && ny < N) {
                     if(lab[ny][nx] == 0 && !visited[ny][nx]) {
-                        count++;
                         visited[ny][nx] = true;
-                        queue.add(new int[]{ny, nx});
+                        queue.add(new Node(ny, nx, node.count+1));
                     }
                 }
             }
+        }
+    }
+
+    public static class Node {
+        int x;
+        int y;
+        int count;
+
+        public Node(int x, int y, int count) {
+            this.x = x;
+            this.y = y;
+            this.count = count;
         }
     }
 }
