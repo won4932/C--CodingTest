@@ -1,7 +1,5 @@
 package com.prac.cote.dbfsGP5;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,80 +7,98 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-@SpringBootApplication
 public class Back14502 {
-    static char[][] ward;
-    static boolean[][] visit;
+    static int[][] lab;
 
     static int[] dx = {0, -1, 0, 1};
     static int[] dy = {-1, 0, 1, 0};
 
-    static int R, C;
-    static int oT = 0, vT = 0;
+    static int N, M;
+
+    static int max = 0;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        R = Integer.parseInt(st.nextToken());
-        C = Integer.parseInt(st.nextToken());
 
-        ward = new char[R][C];
-        visit = new boolean[R][C];
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        for(int i = 0; i < R; i++) {
-            String row = br.readLine();
-            for(int j = 0; j < C; j++) {
-                ward[i][j] = row.charAt(j);
+        lab = new int[N][M];
+
+        for(int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for(int j = 0; j < M; j++) {
+                lab[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        for(int i = 0; i < R; i++) {
-            for(int j = 0; j < C; j++) {
-                if(!visit[i][j]) {
-//                    System.out.println(i + ", " + j);
-                    bfs(i, j);
+        dfs(0);
+
+        System.out.println(max);
+    }
+
+    private static void dfs(int wall) {
+        if(wall == 3) {
+            bfs();
+            return;
+        }
+
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < M; j++) {
+                if(lab[i][j] == 0) {
+                    lab[i][j] = 1;
+                    dfs(wall+1);
+                    lab[i][j] = 0;
                 }
             }
         }
-
-        System.out.println(oT + " " + vT);
     }
-    private static void bfs(int x, int y) {
+
+
+    private static void bfs() {
         Queue<int []> queue = new LinkedList<>();
-        queue.add(new int[]{x, y});
 
-        visit[x][y] = true;
+        int[][] copyLab = new int[N][M];
 
-        int o = 0;
-        int v = 0;
+        for(int i = 0; i < N; i++){
+            copyLab[i] = lab[i].clone();
+            for (int j = 0; j < M; j++){
+                if(lab[i][j] == 2) {
+                    queue.add(new int[]{i, j});
+                }
+            }
+        }
 
         while(!queue.isEmpty()) {
             int[] xy = queue.poll();
 
-            if(ward[xy[0]][xy[1]] == 'o') {
-                o++;
-            }else if(ward[xy[0]][xy[1]] == 'v') {
-                v++;
-            }
-
             for(int i = 0; i < 4; i++) {
                 int nx = xy[0] + dx[i];
                 int ny = xy[1] + dy[i];
-                if(nx > -1 && nx < R -1 && ny > -1 && ny < C-1 && !visit[nx][ny] && ward[nx][ny] != '#') {
-                    visit[nx][ny] = true;
-                    queue.add(new int[]{nx, ny});
+                if(nx > -1 && nx < N && ny > -1 && ny < M) {
+                    if(copyLab[nx][ny] == 0) {
+                        copyLab[nx][ny] = 2;
+                        queue.add(new int[]{nx, ny});
+                    }
                 }
             }
         }
 
-        if(o > v) {
-            v = 0;
-        }else {
-            o = 0;
+        maxCheck(copyLab);
+
+    }
+
+    private static void maxCheck(int[][] copyLab) {
+        int count = 0;
+        for(int i = 0; i < N; i++) {
+            for (int j = 0; j <M; j++) {
+                if(copyLab[i][j] == 0) {
+                    count++;
+                }
+            }
         }
 
-        oT += o;
-        vT += v;
-
+        max = Math.max(max, count);
     }
 }
