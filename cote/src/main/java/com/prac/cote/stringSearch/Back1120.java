@@ -10,30 +10,49 @@ import java.util.StringTokenizer;
 
 public class Back1120 {
     static int N;
+
+    static String A, B;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        N = Integer.parseInt(br.readLine());
+        st = new StringTokenizer(br.readLine());
 
-        var books = new HashMap<String, Integer>();
+        A = st.nextToken();
+        B = st.nextToken();
 
-        for(int i = 0; i < N; i++) {
-            String book = br.readLine();
-            books.put(book, books.getOrDefault(book, 0) +1);
+        int result = Integer.MAX_VALUE;
+
+
+        if(A.length() == B.length()) {
+            result = Math.min(result, compareStr(A, B, 0));
+        }else {
+            int diff = Math.abs(A.length() - B.length());
+
+            for(int i = 0; i <= diff; i++) {
+                if(A.length() > B.length()) {
+                    result = Math.min(result, compareStr(A, B, i));
+                }else {
+                    result = Math.min(result, compareStr(B, A, i));
+                }
+            }
         }
 
-        var list = new LinkedList<>(books.entrySet());
+        System.out.println(result);
 
-        list.sort((o1, o2) -> {
-            if(Objects.equals(o1.getValue(), o2.getValue())) {
-                return o1.getKey().compareTo(o2.getKey());
-            }else {
-                return o2.getValue() - o1.getValue();
+
+    }
+
+    public static int compareStr(String longer, String shorter, int start) {
+        int count = 0;
+        for(int i = start; i < shorter.length()+start; i++) {
+            if(longer.charAt(i) != shorter.charAt(i-start)) {
+                count++;
             }
-        });
+        }
 
-        System.out.println(list.get(0).getKey());
+//        System.out.println(count);
 
+        return count;
     }
 }
