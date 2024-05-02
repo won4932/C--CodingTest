@@ -3,94 +3,110 @@ package com.prac.cote.dbfsGP5;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Back16234 {
-    static int[][] lab;
+    static int[][] ground;
 
     static int[] dx = {0, -1, 0, 1};
     static int[] dy = {-1, 0, 1, 0};
 
-    static int N, M;
-
-    static int min = Integer.MAX_VALUE;
+    static int N, L, R;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        L = Integer.parseInt(st.nextToken());
+        R = Integer.parseInt(st.nextToken());
 
-        lab = new int[N][M];
+        ground = new int[N][N];
 
         for(int i = 0; i < N; i++) {
-            String row = br.readLine();
-            for(int j = 0; j < M; j++) {
-                lab[i][j] = row.charAt(j) - '0';
+            st = new StringTokenizer(br.readLine());
+            for(int j = 0; j < N; j++) {
+                ground[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        bfs();
+        int day = 0;
 
-        min = min == Integer.MAX_VALUE ? -1 : min;
+        while(true) {
+            Queue<int[]> queue = new LinkedList<>();
+            queue.add(new int[]{0, 0});
+            boolean[][] union = new boolean[N][N];
 
-        System.out.println(min);
-    }
+            day++;
 
-    private static void bfs() {
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(new Node(0, 0, 1, false));
-        boolean[][][] visited = new boolean[N][M][2];
+            int count = 1;
 
+            var set = new HashSet<Integer>();
 
-        while(!queue.isEmpty()) {
-            Node node = queue.poll();
+            while(!queue.isEmpty()) {
+                int[] node = queue.poll();
 
-            if(node.x == N-1 && node.y == M-1) {
-                min = Math.min(min, node.count);
-                return;
-            }
+                int x = node[0];
+                int y = node[1];
 
-            int nCount = node.count+1;
+                if(x == N-1 && y == N-1) break;
 
-            for(int i = 0; i < 4; i++) {
-                int nx = node.y + dx[i];
-                int ny = node.x + dy[i];
-                if(nx > -1 && nx < M && ny > -1 && ny < N) {
-                    if(lab[ny][nx] == 0) {
-                        if(!node.wall && !visited[ny][nx][0]) {
-                            queue.add(new Node(ny, nx, nCount, false));
-                            visited[ny][nx][0] = true;
-                        }else if(node.wall && !visited[ny][nx][1]) {
-                            queue.add(new Node(ny, nx, nCount, true));
-                            visited[ny][nx][1] = true;
-                        }
-                    }else if(lab[ny][nx] == 1) {
-                        if(!node.wall) {
-                            queue.add(new Node(ny, nx, nCount, true));
-                            visited[ny][nx][1] = true;
+                for(int a = 0; a < 4; a++) {
+                    int nx = x + dx[a];
+                    int ny = y + dy[a];
+                    if(nx > -1 && nx < N && ny > -1 && ny < N) {
+                        queue.add(new int[]{nx, ny});
+                        int diff = Math.abs(ground[y][x] - ground[ny][nx]);
+                        if(L <= diff && diff <= R) {
+                            union[y][x] = true;
+                            set.add(ground[y][x]);
+                            set.add(ground[ny][nx]);
+                            count++;
                         }
                     }
                 }
             }
+
+            int sum = set.stream().mapToInt(l -> l).sum();
+
+            for(int a = 0; a < N; a++) {
+                for(int b = 0; b < N; b++) {
+                    if(union[b][a]) {
+                        ground[b][a] = sum / count;
+                    }
+                }
+            }
+
+            if(count >= N * N) break;
+            else if(count == 1) {
+                day--;
+                break;
+            }
+
         }
+
+        System.out.println(day);
+
+
+    }
+
+    private static void bfs(int x, int y) {
+
     }
 
     public static class Node {
         int x;
         int y;
-        int count;
 
-        boolean wall;
+        boolean open;
 
-        public Node(int x, int y, int count, boolean wall) {
+        public Node(int x, int y, boolean open) {
             this.x = x;
             this.y = y;
-            this.count = count;
-            this.wall = wall;
+            this.open = open;
         }
     }
 }
