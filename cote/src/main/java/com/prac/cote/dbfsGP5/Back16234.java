@@ -3,9 +3,12 @@ package com.prac.cote.dbfsGP5;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Back16234 {
@@ -15,6 +18,10 @@ public class Back16234 {
     static int[] dy = {-1, 0, 1, 0};
 
     static int N, L, R;
+
+    static boolean[][] visited;
+
+    static List<int[]> list;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -26,6 +33,7 @@ public class Back16234 {
 
         ground = new int[N][N];
 
+
         for(int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             for(int j = 0; j < N; j++) {
@@ -36,64 +44,66 @@ public class Back16234 {
         int day = 0;
 
         while(true) {
-            Queue<int[]> queue = new LinkedList<>();
-            queue.add(new int[]{0, 0});
-            boolean[][] union = new boolean[N][N];
+            visited = new boolean[N][N];
+            int sum = 0;
+            boolean isMove = false;
 
-            day++;
-
-            int count = 1;
-
-            var set = new HashSet<Integer>();
-
-            while(!queue.isEmpty()) {
-                int[] node = queue.poll();
-
-                int x = node[0];
-                int y = node[1];
-
-                if(x == N-1 && y == N-1) break;
-
-                for(int a = 0; a < 4; a++) {
-                    int nx = x + dx[a];
-                    int ny = y + dy[a];
-                    if(nx > -1 && nx < N && ny > -1 && ny < N) {
-                        queue.add(new int[]{nx, ny});
-                        int diff = Math.abs(ground[y][x] - ground[ny][nx]);
-                        if(L <= diff && diff <= R) {
-                            union[y][x] = true;
-                            set.add(ground[y][x]);
-                            set.add(ground[ny][nx]);
-                            count++;
+            for(int i = 0; i < N; i ++) {
+                for(int j = 0; j < N; j++) {
+                    if(!visited[i][j]) {
+                        sum = bfs(j, i);
+                        int avg = sum / list.size();
+                        if(list.size() > 1) {
+                            for (int[] ints : list) {
+                                ground[ints[1]][ints[0]] = avg;
+                            }
+                            isMove = true;
                         }
                     }
                 }
             }
-
-            int sum = set.stream().mapToInt(l -> l).sum();
-
-            for(int a = 0; a < N; a++) {
-                for(int b = 0; b < N; b++) {
-                    if(union[b][a]) {
-                        ground[b][a] = sum / count;
-                    }
-                }
-            }
-
-            if(count >= N * N) break;
-            else if(count == 1) {
-                day--;
+            if(!isMove) {
                 break;
             }
-
+            day++;
         }
 
         System.out.println(day);
-
-
     }
 
-    private static void bfs(int x, int y) {
+    private static int bfs(int x, int y) {
+        Queue<int[]> queue = new LinkedList<>();
+        list = new ArrayList<>();
+
+        queue.add(new int[]{x, y});
+
+        visited[y][x] = true;
+        list.add(new int[]{x, y});
+
+        int sum = ground[y][x];
+
+        while(!queue.isEmpty()) {
+            int[] node = queue.poll();
+
+            int px = node[0];
+            int py = node[1];
+
+            for(int a = 0; a < 4; a++) {
+                int nx = px + dx[a];
+                int ny = py + dy[a];
+                if(nx > -1 && nx < N && ny > -1 && ny < N && !visited[ny][nx]) {
+                    int diff = Math.abs(ground[py][px] - ground[ny][nx]);
+                    if(L <= diff && diff <= R) {
+                        queue.add(new int[]{nx, ny});
+                        visited[ny][nx] = true;
+                        list.add(new int[]{nx, ny});
+                        sum+=ground[ny][nx];
+                    }
+                }
+            }
+        }
+
+        return sum;
 
     }
 
