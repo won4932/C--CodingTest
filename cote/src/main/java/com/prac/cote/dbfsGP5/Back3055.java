@@ -1,123 +1,89 @@
 package com.prac.cote.dbfsGP5;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
 public class Back3055 {
     static char[][] map;
-
+    static int r;
+    static int c;
+    static int[] dy = {1, 0, -1, 0};
     static int[] dx = {0, -1, 0, 1};
-    static int[] dy = {-1, 0, 1, 0};
 
-    static int R, C;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        r = sc.nextInt();
+        c = sc.nextInt();
+        map = new char[r][c];
 
-    static boolean[][] visited;
+        int sY = 0;
+        int sX = 0;
 
-    static int[] urchin;
-
-    static int min = Integer.MAX_VALUE;
-
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-
-        R = Integer.parseInt(st.nextToken());
-        C = Integer.parseInt(st.nextToken());
-        urchin = new int[2];
-
-        map = new char[R][C];
-        visited = new boolean[R][C];
-
-        for(int i = 0; i < R; i++) {
-            String row = br.readLine();
-            for(int j = 0; j < C; j++) {
-                char ch = row.charAt(j);
-                if(ch == 'S') {
-                    urchin[0] = j;
-                    urchin[1] = i;
-                    map[i][j] = 'S';
-                }else {
-                    map[i][j] = ch;
+        for (int i = 0; i < r; i++) {
+            String line = sc.next();
+            for (int j = 0; j < c; j++) {
+                map[i][j] = line.charAt(j);
+                if (map[i][j] == 'S') {
+                    sY = i;
+                    sX = j;
                 }
-
             }
         }
 
-        min = Math.min(min, bfs(urchin[0], urchin[1]));
-
-        System.out.println(min == -1 ? "KAKTUS" : min);
+        int result = bfs(sY, sX);
+        System.out.println(result == -1 ? "KAKTUS" : result);
     }
 
-    private static int bfs(int x, int y) {
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(new Node(x, y, 0));
-        visited[y][x] = true;
+    private static int bfs(int sY, int sX) {
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{sY, sX});
+        int[][] dis = new int[r][c];
+        dis[sY][sX] = 1;
 
-        while(!queue.isEmpty()) {
-            Node node = queue.poll();
-
-            int px = node.x;
-            int py = node.y;
-
-            System.out.println(px + " : " + py);
-
-            if(map[py][px] == 'D') return node.count;
-
-            rises();
-
-            for(int a = 0; a < 4; a++) {
-                int nx = px + dx[a];
-                int ny = py + dy[a];
-
-                if(nx > -1 && nx < C && ny > -1 && ny < R && !visited[ny][nx]) {
-                    if(map[ny][nx] == '.' || map[ny][nx] == 'D') {
-                        queue.add(new Node(nx, ny, node.count+1));
-                        visited[ny][nx] = true;
-                        if(map[ny][nx] == '.') map[ny][nx] = 'S';
-                    }
-
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                if (map[i][j] == '*') {
+                    q.offer(new int[]{i, j});
                 }
             }
         }
 
+        while (!q.isEmpty()) {
+            int[] move = q.poll();
+            char now = map[move[0]][move[1]];
+
+            for (int i = 0; i < 4; i++) {
+                int moveY = move[0] + dy[i];
+                int moveX = move[1] + dx[i];
+
+                if (validation(moveY, moveX)) {
+                    continue;
+                }
+
+                if (now == 'S') {
+                    if (map[moveY][moveX] == 'D') {
+                        return dis[move[0]][move[1]];
+                    }
+                    if (map[moveY][moveX] == '.') {
+                        map[moveY][moveX] = 'S';
+                        q.offer(new int[]{moveY, moveX});
+                        dis[moveY][moveX] = dis[move[0]][move[1]] + 1;
+                    }
+                }
+
+                if (now == '*') {
+                    if (map[moveY][moveX] == '.' || map[moveY][moveX] == 'S') {
+                        map[moveY][moveX] = '*';
+                        q.offer(new int[]{moveY, moveX});
+                    }
+                }
+            }
+        }
         return -1;
-
     }
 
-    private static void rises() {
-        boolean[][] waters = new boolean[R][C];
-
-        for(int i = 0 ; i < R; i++) {
-            for(int j = 0; j < C; j++) {
-                if(!waters[i][j] && map[i][j] == '*') {
-                    for(int a = 0; a < 4; a++) {
-                        int nx = j + dx[a];
-                        int ny = i + dy[a];
-                        if(nx > -1 && nx < C && ny > -1 && ny < R && !waters[ny][nx] && map[ny][nx] == '.') {
-                            waters[ny][nx] = true;
-                            map[ny][nx] = '*';
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public static class Node {
-        int x;
-        int y;
-        int count;
-
-        public Node(int x, int y, int count) {
-            this.x = x;
-            this.y = y;
-            this.count = count;
-        }
+    private static boolean validation(int moveY, int moveX) {
+        return !(0 <= moveY && moveY < r && 0 <= moveX && moveX < c);
     }
 }
