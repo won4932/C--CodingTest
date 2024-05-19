@@ -33,15 +33,7 @@ public class Back2206 {
             }
         }
 
-        for(int i = 0; i < N; i++) {
-            for(int j = 0; j < M; j++) {
-                if(lab[i][j] == 1) {
-                    lab[i][j] = 0;
-                    bfs();
-                    lab[i][j] = 1;
-                }
-            }
-        }
+        bfs();
 
         min = min == Integer.MAX_VALUE ? -1 : min;
 
@@ -50,9 +42,8 @@ public class Back2206 {
 
     private static void bfs() {
         Queue<Node> queue = new LinkedList<>();
-        queue.add(new Node(0, 0, 1));
-        boolean[][] visited = new boolean[N][M];
-        visited[0][0] = true;
+        queue.add(new Node(0, 0, 1, false));
+        boolean[][][] visited = new boolean[N][M][2];
 
 
         while(!queue.isEmpty()) {
@@ -63,13 +54,25 @@ public class Back2206 {
                 return;
             }
 
+            int nCount = node.count+1;
+
             for(int i = 0; i < 4; i++) {
                 int nx = node.y + dx[i];
                 int ny = node.x + dy[i];
                 if(nx > -1 && nx < M && ny > -1 && ny < N) {
-                    if(lab[ny][nx] == 0 && !visited[ny][nx]) {
-                        visited[ny][nx] = true;
-                        queue.add(new Node(ny, nx, node.count+1));
+                    if(lab[ny][nx] == 0) {
+                        if(!node.wall && !visited[ny][nx][0]) {
+                            queue.add(new Node(ny, nx, nCount, false));
+                            visited[ny][nx][0] = true;
+                        }else if(node.wall && !visited[ny][nx][1]) {
+                            queue.add(new Node(ny, nx, nCount, true));
+                            visited[ny][nx][1] = true;
+                        }
+                    }else if(lab[ny][nx] == 1) {
+                        if(!node.wall) {
+                            queue.add(new Node(ny, nx, nCount, true));
+                            visited[ny][nx][1] = true;
+                        }
                     }
                 }
             }
@@ -81,10 +84,13 @@ public class Back2206 {
         int y;
         int count;
 
-        public Node(int x, int y, int count) {
+        boolean wall;
+
+        public Node(int x, int y, int count, boolean wall) {
             this.x = x;
             this.y = y;
             this.count = count;
+            this.wall = wall;
         }
     }
 }
