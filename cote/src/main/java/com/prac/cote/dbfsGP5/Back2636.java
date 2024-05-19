@@ -19,6 +19,8 @@ public class Back2636 {
 
     static boolean[][] visitied;
 
+    static int cheese = Integer.MAX_VALUE;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -33,48 +35,41 @@ public class Back2636 {
         for(int i = 0; i < Y; i++) {
             st = new StringTokenizer(br.readLine());
             for(int j = 0; j < X; j++) {
-                board[i][j] = Integer.parseInt(st.nextToken());
+                int piece = Integer.parseInt(st.nextToken());
+                board[i][j] = piece;
+                boardClone[i][j] = piece;
+
             }
         }
+
+
 
         int count = 0;
 
-        boolean ck = true;
+        while(true) {
 
-        int q = 3;
+            visitied = new boolean[Y][X];
 
-        while(ck) {
-            ck = false;
-
-            for(int i = 1; i < Y-1; i++) {
-                for(int j = 1; j < X-1; j++) {
-                    if(board[i][j] == 1) {
-                        ck = true;
-                        visitied = new boolean[Y][X];
-                        bfs(i, j);
-                    }
-                }
+            if(bfs()) {
+                count++;
+                board = boardClone.clone();
+            }else {
+                break;
             }
-
-            board = boardClone.clone();
-            // for (int[] ints : board) {
-            //     for (int anInt : ints) {
-            //         System.out.print(anInt + " ");
-            //     }
-            //     System.out.println();
-            // }
-            // System.out.println();
-            count++;
-            // q--;
         }
 
-        System.out.println(count-1);
+        System.out.println(count);
+        System.out.println(cheese);
     }
 
-    private static void bfs(int y, int x) {
+    private static boolean bfs() {
         Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{y, x});
-        visitied[y][x] = true;
+        queue.add(new int[]{0, 0});
+        visitied[0][0] = true;
+
+        boolean ck = false;
+
+        int chees = 0;
 
         while(!queue.isEmpty()) {
             int xy[] = queue.poll();
@@ -88,13 +83,19 @@ public class Back2636 {
 
                 if(nx < X && nx > -1 && ny < Y && ny > -1 && !visitied[ny][nx]) {
                     visitied[ny][nx] = true;
-                    if(board[ny][nx] == 0) {
-                        boardClone[nowY][nowX] = 0;
+                    if(board[ny][nx] == 1) {
+                        chees++;
+                        ck = true;
+                        boardClone[ny][nx] = 0;
                     }else {
                         queue.add(new int[]{ny, nx});
                     }
                 }
             }
         }
+
+        cheese = chees == 0 ? cheese : Math.min(cheese, chees);
+
+        return ck;
     }
 }
