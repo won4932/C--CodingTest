@@ -9,15 +9,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
+import java.util.stream.IntStream;
 
 public class Back13913 {
 
     static int[] dp = new int[100001];
-    static int[] order;
 
     static int N, K;
 
     static int min = Integer.MAX_VALUE;
+
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,33 +31,29 @@ public class Back13913 {
 
         if(N >= K) {
             min = N-K;
+            for(int i = N; i >= K; i--) {
+                sb.append(i).append(" ");
+            }
         }else {
             bfs();
         }
 
-        order = new int[min+1];
-        order[0] = N;
-        dfs(N, 1);
-
-        StringBuilder sb = new StringBuilder();
-
         System.out.println(min);
-        for (int i : order) {
-			sb.append(i).append(" ");
-        }
 
-        System.out.println(sb.toString());
+        System.out.println(sb);
 
     }
 
     private static void bfs() {
-        Queue<Integer> queue = new LinkedList<>();
-        queue.add(N);
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(new Node(N, String.valueOf(N)));
 
         dp[N] = 1;
 
         while(!queue.isEmpty()) {
-            int now = queue.poll();
+            Node node = queue.poll();
+
+            int now = node.location;
 
             if(min < dp[now]) return;
 
@@ -70,10 +68,14 @@ public class Back13913 {
                 if(i < 100001 && i > -1) {
                     if(i == K) {
                         min = dp[now];
+                        if(sb.isEmpty()) {
+                            sb.append(node.route).append(" ").append(i);
+                        }
+
                     }
 
                     if(dp[i] == 0 || dp[i] == dp[now] + 1) {
-                        queue.add(i);
+                        queue.add(new Node(i, node.route + " " + i));
                         dp[i] = dp[now]+1;
                     }
                 }
@@ -81,27 +83,13 @@ public class Back13913 {
         }
     }
 
-    private static boolean dfs(int n, int count) {
-        if(n == K) {
-            return true;
+    public static class Node {
+        int location;
+        String route;
+
+        public Node(int location, String route) {
+            this.location = location;
+            this.route = route;
         }
-
-        if(count > min) return false;
-
-        int[] ay = new int[3];
-
-        ay[0] = n+1;
-        ay[1] = n-1;
-        ay[2] = n*2;
-
-        for (int i : ay) {
-            if(i < 100001 && i > -1) {
-                if(dfs(i, count+1)) {
-                    order[count] = i;
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
