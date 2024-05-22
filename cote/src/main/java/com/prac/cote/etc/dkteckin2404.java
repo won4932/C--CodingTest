@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 @SpringBootApplication
 public class dkteckin2404 {
@@ -42,6 +43,8 @@ public class dkteckin2404 {
         big = big.add(big2);
 
         System.out.println(big.toString());
+
+        IntStream.range(1, 5).forEach(i -> System.out.print(i + " "));
     }
 
 }
