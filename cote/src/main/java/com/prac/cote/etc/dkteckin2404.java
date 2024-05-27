@@ -42,9 +42,17 @@ public class dkteckin2404 {
 
         big = big.add(big2);
 
-        System.out.println(big.toString());
+        // System.out.println(big.toString());
+        //
+        // IntStream.range(1, 5).forEach(i -> System.out.print(i + " "));
 
-        IntStream.range(1, 5).forEach(i -> System.out.print(i + " "));
+        String a = "AAAAA";
+        String b = "ABCDEBBBB";
+
+        for(int i = 0; i < b.length() - a.length() + 1; i++) {
+            System.out.println(b.substring(i, a.length() + i));
+
+        }
     }
 
 }
