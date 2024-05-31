@@ -46,13 +46,15 @@ public class dkteckin2404 {
         //
         // IntStream.range(1, 5).forEach(i -> System.out.print(i + " "));
 
-        String a = "AAAAA";
-        String b = "ABCDEBBBB";
+        // String a = "AAAAA";
+        // String b = "ABCDEBBBB";
+        //
+        // for(int i = 0; i < b.length() - a.length() + 1; i++) {
+        //     System.out.println(b.substring(i, a.length() + i));
+        //
+        // }
 
-        for(int i = 0; i < b.length() - a.length() + 1; i++) {
-            System.out.println(b.substring(i, a.length() + i));
-
-        }
+        System.out.println((int)Math.ceil((double)7 / 2));
     }
 
 }
